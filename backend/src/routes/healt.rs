@@ -1,6 +1,14 @@
+use axum::{Router, response::IntoResponse, routing::get};
+
+use crate::app_state::AppState;
 
 
 
-pub async fn health()->&'static str{
-    "Ok - server is runnig"
+
+pub fn healt()->Router<AppState>{
+    Router::new().route("/", get(mm))
+}
+
+async  fn  mm()->impl IntoResponse{
+    "OK - Sunucu Çalışıyor"
 }

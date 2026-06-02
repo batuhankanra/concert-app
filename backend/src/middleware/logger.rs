@@ -1,15 +1,16 @@
 use std::{time::Instant,net::SocketAddr};
 
-use axum::{body::Body, extract::ConnectInfo, http::Request, middleware::Next, response::Response};
+use axum::{ body::Body, extract::ConnectInfo, http::Request, middleware::Next, response::Response};
 use chrono::Local;
 
 
 
 
-pub async fn logger_middleware(ConnectInfo(addr):ConnectInfo<SocketAddr>,req:Request<Body>,next:Next)->Response{
-    let start = Instant::now();
-    let method=req.method().clone();
-    let uri =req.uri().clone();
+pub async fn logger_middleware(ConnectInfo(addr):ConnectInfo<SocketAddr>,req:Request<Body>,next:Next)->Response {
+    
+    let start: Instant = Instant::now();
+    let method: axum::http::Method=req.method().clone();
+    let uri: axum::http::Uri =req.uri().clone();
     let response=next.run(req).await;
     let latency=start.elapsed();
     let status=response.status();
