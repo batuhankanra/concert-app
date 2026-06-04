@@ -10,6 +10,7 @@ mod model;
 mod routes;
 mod services;
 mod utils;
+mod dto;
 
 #[tokio::main]
 async  fn main() {
@@ -32,7 +33,7 @@ async  fn main() {
         postgres_db,
     };
 
-    let app = routes::create_route(state);
+    let app: axum::Router = routes::create_route(state);
     let addr: SocketAddr=SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener=tokio::net::TcpListener::bind(addr).await.unwrap();
     println!("server is running on http://{}",addr);

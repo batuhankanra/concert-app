@@ -15,7 +15,7 @@ impl CONFIG {
     pub fn from_env()->Self{
         Self {
             app_name:get_env("APP_NAME"),
-            postgres_url:get_env("POSTGRES_URL"),
+            postgres_url:get_env("DATABASE_URL"),
             jwt_secret:get_env("JWT_SECRET"),
             redis_url:get_env("REDIS_URL"),
             server_port:get_env("SERVER_PORT").parse().expect("SERVER_PORT must be a valid number"),
