@@ -239,7 +239,6 @@ dependencies = [
 name = "concert-backend"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "argon2",
  "axum",
  "chrono",

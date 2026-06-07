@@ -1,6 +1,7 @@
+
 use sqlx::PgPool;
 
-use crate::{dto::users_dto::RegisterRequest, utils::password_hash::{ hash_password}};
+use crate::{dto::users_dto::RegisterRequest, errors::{AppResult, error::AppError}, utils::password_hash::hash_password};
 
 
 
@@ -9,11 +10,11 @@ use crate::{dto::users_dto::RegisterRequest, utils::password_hash::{ hash_passwo
 pub async fn register(
     db: &PgPool,
     payload: RegisterRequest,
-) -> Result<(), anyhow::Error> {
+) -> AppResult<()> {
 
-    let password_hash =hash_password(&payload.password).expect("hash problem");
+    let password_hash: String =hash_password(&payload.password).map_err(|_| AppError::Internal)?;
 
-    sqlx::query(
+    let result=sqlx::query(
         r#"
         INSERT INTO users
         (
@@ -29,7 +30,18 @@ pub async fn register(
     .bind(payload.email)
     .bind(password_hash)
     .execute(db)
-    .await?;
+    .await;
 
-    Ok(())
+    match result {
+        Ok(_)=>Ok(()),
+
+
+        Err(sqlx::Error::Database(db_err))=>{
+            if db_err.constraint()==Some("users_email_key") {
+                return Err(AppError::EmailExists);
+            }
+            Err(AppError::DbError)
+        }
+        Err(_)=>Err(AppError::DbError)
+    }
 }

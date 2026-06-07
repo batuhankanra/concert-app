@@ -1,7 +1,7 @@
-use axum::{Json, extract::State};
-use serde_json::{Value, json};
+use axum::{Json, extract::{State}};
+use serde_json::{ json};
 
-use crate::{app_state::AppState, dto::users_dto::RegisterRequest, services::auth_services};
+use crate::{app_state::AppState, dto::users_dto::RegisterRequest, errors::{AppResult}, extractors::validated_json::ValidatedJson, services::auth_services};
 
 
 
@@ -9,13 +9,12 @@ use crate::{app_state::AppState, dto::users_dto::RegisterRequest, services::auth
 
 pub async fn register_handlers(
     State(state):State<AppState>,
-    Json(payload):Json<RegisterRequest>
-)->Json<Value>{
-    match auth_services::register(&state.postgres_db, payload).await {
-        Ok(_)=>{
-            Json(json!({"msg":"user created"}))
-        },
-        Err(err)=>Json(json!({"err:":&err.to_string()}))
-
-    }
+    ValidatedJson(payload):ValidatedJson<RegisterRequest>
+)->AppResult<Json<serde_json::Value>>{
+   
+     auth_services::register(&state.postgres_db, payload).await?;
+     Ok(Json(json!({
+        "message": "User created successfully"
+    })))
+        
 }

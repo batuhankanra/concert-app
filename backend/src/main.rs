@@ -2,6 +2,8 @@ use dotenv::dotenv;
 use std::net::SocketAddr;
 
 mod app_state;
+mod errors;
+mod extractors;
 mod config;
 mod database;
 mod handlers;
@@ -34,7 +36,7 @@ async  fn main() {
     };
 
     let app: axum::Router = routes::create_route(state);
-    let addr: SocketAddr=SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr: SocketAddr=SocketAddr::from(([127, 0, 0, 1], config.server_port));
     let listener=tokio::net::TcpListener::bind(addr).await.unwrap();
     println!("server is running on http://{}",addr);
     axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await.unwrap()

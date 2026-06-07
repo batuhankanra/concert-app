@@ -1,4 +1,4 @@
-pub mod healt;
+
 pub mod auth_route;
 use axum::{Router, http::{Method, header::{AUTHORIZATION, CONTENT_TYPE}}, middleware};
 use tower_http::cors::CorsLayer;
