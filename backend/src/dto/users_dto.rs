@@ -21,3 +21,11 @@ pub struct RegisterRequest {
     ))]
     pub password: String,
 }
+
+#[derive(Debug,Deserialize,Validate)]
+pub struct LoginRequest{
+    #[validate(email)]
+    pub email:String,
+    #[validate(length(min=6))]
+    pub password:String,
+}

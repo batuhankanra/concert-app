@@ -20,7 +20,7 @@ async  fn main() {
 
 
     dotenv().ok();
-    let config: config::env::CONFIG=config::env::CONFIG::from_env();
+    let config=config::env::CONFIG::from_env();
     println!("The server has started working ");
 
     let postgres_db: sqlx::Pool<sqlx::Postgres>=database::database::postgres_connect(&config.postgres_url).await.expect("postgres connection failed");
@@ -33,6 +33,7 @@ async  fn main() {
     }
     let state: app_state::AppState=app_state::AppState{
         postgres_db,
+        config:config.clone()
     };
 
     let app: axum::Router = routes::create_route(state);

@@ -24,7 +24,10 @@ pub enum AppError{
     ValidationError(String),
 
     #[error("internal server error")]
-    Internal
+    Internal,
+    
+    #[error("exists")]
+    InvalidCredentials
 }
 
 
@@ -42,7 +45,9 @@ impl IntoResponse for AppError {
 
             AppError::DbError=>(StatusCode::INTERNAL_SERVER_ERROR,"database error".into()),
 
-            AppError::Internal=>(StatusCode::INTERNAL_SERVER_ERROR,"internal server error".into())
+            AppError::Internal=>(StatusCode::INTERNAL_SERVER_ERROR,"internal server error".into()),
+            
+            AppError::InvalidCredentials=>(StatusCode::UNAUTHORIZED,"invalid email or password".into())
         };
         (
             status,
